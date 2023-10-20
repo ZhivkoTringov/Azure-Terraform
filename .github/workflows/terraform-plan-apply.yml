@@ -7,7 +7,7 @@ on:
 
 jobs:
   terraform-plan: 
-    name: 'Terraform Test'
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     
     steps:
