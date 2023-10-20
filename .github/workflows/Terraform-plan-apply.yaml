@@ -1,12 +1,12 @@
-name: 'Terraform Test'
+name: 'Terraform Plan Apply'
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  terraform-test:
-    name: 'Terraform Test'
+  terraform-plan:
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     
     steps:
@@ -14,20 +14,28 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Login to Azure via CLI
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
-      with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
 
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt -check -recursive
+    # Generate terraform execution plan
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
 
-    # Validate Terraform files
-    - name: Terraform Validate
-      run: terraform validate
+    # Save to Artifact
+    - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan
+
