@@ -34,8 +34,8 @@ jobs:
 
     # Save to Artifact
     - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v2
-        with:
-          name: tfplan
-          path: tfplan
+      uses: actions/upload-artifact@v2
+      with:
+        name: tfplan
+        path: tfplan
 
